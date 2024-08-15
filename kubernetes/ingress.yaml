@@ -6,8 +6,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: ojonuba.me
-    http:
+  - http:
       paths:
       - pathType: Prefix
         path: /
