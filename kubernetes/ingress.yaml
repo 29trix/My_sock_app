@@ -6,7 +6,8 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - http:
+  - host: ezzyolopade.me
+    http:
       paths:
       - pathType: Prefix
         path: /

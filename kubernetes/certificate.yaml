@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: sock-shop-tls  # The name of your certificate resource
+  namespace: sock-shop  # The namespace where this certificate is used
+spec:
+  secretName: sock-shop-tls  # Name of the Kubernetes secret where the certificate and key will be stored
+  issuerRef:
+    name: letsencrypt-prod  # Refers to the Issuer that will issue the certificate
+    kind: ClusterIssuer  # Type of Issuer; a ClusterIssuer can be used cluster-wide
+  dnsNames:
+  - ac812b76e30124ad1980189596049811-937841450.us-east-1.elb.amazonaws.com  # Domain name for which the certificate is requested

@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer  # A ClusterIssuer can issue certificates for any namespace in the cluster
+metadata:
+  name: letsencrypt-prod  # Name of the ClusterIssuer
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory  # ACME server URL for Let's Encrypt
+    email: trixstem@gmail.com  # Email to register with Let's Encrypt
+    privateKeySecretRef:
+      name: letsencrypt-prod  # Kubernetes secret to store the ACME account key
+    solvers:
+    - http01:
+        ingress:
+          class: nginx  # Use the nginx Ingress controller to solve the HTTP-01 challenge
