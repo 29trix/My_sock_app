@@ -148,3 +148,157 @@ Initialize the your terraform files, using this command which will download the 
   
   you can proceed to encrypt your domain name using cert-manager
   
+### Monitoring
+Prometheus Setup
+Overview
+Prometheus is an open-source systems monitoring and alerting toolkit designed for reliability and scalability. In this project, Prometheus is used to collect and store metrics from various components of the application, enabling real-time monitoring and alerting.
+
+Setup Instructions
+Create a Namespace for Monitoring
+It's a good practice to create a separate namespace for monitoring tools. This helps keep monitoring resources organized and isolated from other components.
+```bash
+kubectl apply -f prometeus-ns.yaml
+```
+Proceed to create your service, deployment and configmap for prometheus and then apply them using the following command
+```bash
+kubectl apply -f prometheus-configmap.yaml
+kubectl apply -f prometheus-deployment.yaml
+kubectl apply -f prometheus-service.yaml
+```
+check the status of your pods using the command
+```bash
+kubectl get pods -n monitoring
+```
+check the service
+```bash
+kubectl get svc -n monitoring
+```
+![prometheus-status](img/monitoring.png)
+
+you can access the prometheus dashboard in your browser
+```bash
+http://a1928e67a07964a80a0b2d7d3cdb049d-705415564.us-east-1.elb.amazonaws.com:9090
+```
+check your targets
+![targets](img/promtheus-monitoring)
+![status](img/promtheus-mnt)
+
+If you can access Prometheus and see the targets in the UI, then Prometheus is working correctly!
+
+With Prometheus successfully set up, your Kubernetes cluster is now being monitored, and metrics are being collected. This is an essential part of maintaining the health and performance of your application.
+
+
+### Grafana Setup
+Overview
+Grafana is an open-source platform for monitoring and observability. It provides powerful visualizations and dashboards to help you analyze and understand the metrics collected by Prometheus.
+
+Setup Instructions
+1. Create a mainfest for grafana deployment, service and configmap
+
+2. To deploy Grafana and expose it via a LoadBalancer, apply the YAML files using the following commands:
+```bash
+kubectl apply -f grafana-configmap.yaml
+kubectl apply -f grafana-deployment.yaml
+```
+
+3. Check the status of the Grafana pods using the following command:
+```bash
+kubectl get pods -n monitoring
+kubectl get svc -n monitoring
+```
+![grafana-status](img/runing-grafana-pods.png)
+
+4. Access the Grafana dashboard in your browser using the LoadBalancer IP:
+```bash
+http://a164ac9fc214046d6a80d24ffcd158e5-1733268467.us-east-1.elb.amazonaws.com:3000
+```
+5. Log in to Grafana using the default credentials (username: admin, password: admin). You will be prompted to change the password after logging in for the first time.
+![grafana-login](img/grafana-login.png)
+
+6.  Add Prometheus as a Data Source
+Navigate to Configuration > Data Sources in Grafana.
+- Click Add data source, and select Prometheus.
+- Enter the following settings:
+- URL: http://prometheus.monitoring.svc.cluster.local:9090
+- Click Save & Test to confirm that Grafana can connect to Prometheus.
+
+7. Create Dashboards
+With Prometheus added as a data source, you can create custom dashboards or import pre-built ones to visualize the metrics.
+To import a pre-built dashboard:
+Go to Dashboards > Manage.
+- Click Import and enter a dashboard ID from Grafana’s community (e.g., 1860 for Node Exporter Full).
+- Load the dashboard and start monitoring your infrastructure.
+
+![grafana-dashboard](img/grafana-chart.png)
+
+With Grafana set up, you now have a powerful tool for visualizing the metrics collected by Prometheus. You can create custom dashboards tailored to your specific monitoring needs, ensuring you have full visibility into your application and infrastructure.
+
+
+### Logging Setup with Elasticsearch and Kibana
+Overview
+This guide covers the setup and configuration of Elasticsearch and Kibana for logging within a Kubernetes cluster. Elasticsearch stores and indexes log data, while Kibana provides visualization and querying capabilities.
+
+Deployment
+1. Create a Namespace for Logging
+ 
+ Elasticsearch Deployment
+
+- Create Elasticsearch Deployment and Service
+- Apply the Elasticsearch deployment and service YAML files using the following commands:
+```bash
+kubectl apply -f elasticsearch-deployment.yaml
+kubectl apply -f elasticsearch-service.yaml
+```
+2. Check your elasticsearch
+```bash
+kubectl get svc -n logging
+```
+
+3. Kibana Deployment
+- Create Kibana Deployment and Service:
+- Apply the Kibana deployment and service YAML files using the following commands:
+```bash
+kubectl apply -f kibana-deployment.yaml
+kubectl apply -f kibana-service.yaml
+```
+- Check the status of the kibana service
+```bash
+kubectl get svc -n logging
+```
+4. Configuration
+- Filebeat Configuration
+Configure Filebeat to send logs to Elasticsearch and Kibana:
+
+Edit the filebeat.yml configuration file:
+```bash
+filebeat.inputs:
+- type: log
+  paths:
+    - /var/log/*.log
+
+output.elasticsearch:
+  hosts: ["http://<elasticsearch-external-ip>:9200"]
+  username: "admin"
+  password: "admin"
+
+setup.kibana:
+  host: "http://<kibana-external-ip>:5601"
+```
+- Apply Filebeat Setup:
+```dash
+sudo filebeat setup
+```
+5. Accessing Services
+Elasticsearch: Access the Elasticsearch service at http://a0143940adb99498dba0a4a9616cfa7c-901989119.us-east-1.elb.amazonaws.com:9200.
+Kibana: Access the Kibana service at http://a34d39927341840fcb7537df8678ceee-1834793744.us-east-1.elb.amazonaws.com:5601.
+![kibana-webpage](img/kibana.png)
+
+6. Troubleshooting
+
+- Timeout Issues: Ensure Kibana is running and accessible. Increase the timeout settings in Filebeat if necessary.
+
+- Access Errors: Check the logs for Elasticsearch and Kibana to diagnose and fix any issues.
+
+
+## Conclusion
+The successful deployment of the Socks Shop application using Kubernetes and Infrastructure as Code showcases the effectiveness of contemporary cloud-native technologies. This project illustrates how to create a resilient, scalable, and secure environment for microservices-based applications. It also serves as a detailed reference for deploying similar applications in production settings.
