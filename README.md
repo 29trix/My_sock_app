@@ -180,8 +180,8 @@ you can access the prometheus dashboard in your browser
 http://a1928e67a07964a80a0b2d7d3cdb049d-705415564.us-east-1.elb.amazonaws.com:9090
 ```
 check your targets
-![targets](img/promtheus-monitoring)
-![status](img/promtheus-mnt)
+![targets](img/promtheus-monitoring.png)
+![status](img/promtheus-mnt.png)
 
 If you can access Prometheus and see the targets in the UI, then Prometheus is working correctly!
 
@@ -213,6 +213,7 @@ kubectl get svc -n monitoring
 http://a164ac9fc214046d6a80d24ffcd158e5-1733268467.us-east-1.elb.amazonaws.com:3000
 ```
 5. Log in to Grafana using the default credentials (username: admin, password: admin). You will be prompted to change the password after logging in for the first time.
+
 ![grafana-login](img/grafana-login.png)
 
 6.  Add Prometheus as a Data Source
