@@ -173,8 +173,6 @@ check the service
 ```bash
 kubectl get svc -n monitoring
 ```
-![prometheus-status](img/monitoring.png)
-
 you can access the prometheus dashboard in your browser
 ```bash
 http://a1928e67a07964a80a0b2d7d3cdb049d-705415564.us-east-1.elb.amazonaws.com:9090
